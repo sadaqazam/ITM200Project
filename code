@@ -1,0 +1,80 @@
+#Step 1
+import csv
+with open ('Data.csv', mode = 'r') as fileCSV:
+    fCSV = csv.reader(fileCSV)
+    for line in fCSV:
+        print(line)
+
+#Step 2
+import csv
+
+data = []
+with open('Data.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        data.append(row)
+
+month_index = data[0].index('Month')
+monthly_sales = {month: 0 for month in data[0][1:]}
+
+for row in data[1:]:
+    for i, month in enumerate(data[0][1:]):
+        monthly_sales[month] += int(row[i+1])
+
+with open('stats.txt', 'w') as file:
+    for month, sales in monthly_sales.items():
+        file.write(f"{month}: {sales}\n")
+
+#Step 3
+import csv
+import matplotlib.pyplot as plt
+
+data = []
+with open('Data.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        data.append(row)
+
+yearly_sales = {}
+for row in data[1:]:
+    year = row[0]
+    total_sales = sum(int(sales) for sales in row[1:])
+    yearly_sales[year] = total_sales
+
+years = list(yearly_sales.keys())
+sales = list(yearly_sales.values())
+
+plt.figure(figsize=(8, 6))
+plt.bar(years, sales)
+
+plt.title("Total Sales by Year")
+plt.xlabel("Year")
+plt.ylabel("Total Sales")
+plt.show()
+
+#step 4
+for i in range(len(data)):
+    data[i] = float(data[i])
+
+
+sales_2021 = sum(data[:6])
+sales_2022 = sum(data[6:12])
+
+sgr = (sales_2022 - sales_2021) / sales_2021
+
+with open('stats.txt', 'a') as f:
+    f.write(f"Sales Growth Rate: {sgr:.2f}\n")
+
+estimated_sales_2022 = [data[-6 + i] + data[-6 + i] * sgr for i in range(6)]
+
+months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+# Create a horizontal bar plot
+plt.barh(months, estimated_sales_2022)
+
+# Set the title and axis labels
+plt.title("Estimated Sales for Last Six Months of 2022")
+plt.xlabel("Sales")
+plt.ylabel("Month")
+
+plt.show()
